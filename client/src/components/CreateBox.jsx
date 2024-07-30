@@ -35,7 +35,7 @@ const CreateBox = ({ isOpen, onClose }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://43.204.36.107:3000/api/card/create",
+        "http://localhost:3000/api/card/create",
         data,
         {
           headers: {
