@@ -13,7 +13,7 @@ const DashboardRightBox = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:3000/api/card/history",
+          "http://43.204.36.107:3000/api/card/history",
           {
             onDownloadProgress: (progressEvent) => {
               if (progressEvent.lengthComputable) {
