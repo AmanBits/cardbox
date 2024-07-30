@@ -1,7 +1,10 @@
 module.exports = {
-  host: "localhost",
-  username: "root",
-  password: "",
-  database:"cardbox",
-  dialect: "mysql"
+  development: {
+    username: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME,
+    host: process.env.DATABASE_HOST,
+    dialect: 'mysql',
+  },
+  // Add configurations for other environments if needed
 };

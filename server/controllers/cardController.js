@@ -1,8 +1,6 @@
 const db = require("../models");
-
-const Card = db.Card;
-
 const path = require("path");
+const Card = db.Card;
 
 // Encode link
 const encodeLink = (result) => {
@@ -26,7 +24,6 @@ const encodeLink = (result) => {
 };
 
 // Decode Link
-
 const decodeIds = (encodedIds) => {
   return new Promise((resolve, reject) => {
     try {
@@ -49,8 +46,7 @@ const decodeIds = (encodedIds) => {
 //  console.log('Decoded IDs:', { id1: decodedId1, id2: decodedId2 });
 
 const createCard = async (req, res) => {
-  const transaction = await sequelize.transaction();
-
+  const transaction = await db.sequelize.transaction();
   try {
     // Save file paths and text data
     const newUpload = await Card.create(
@@ -63,7 +59,6 @@ const createCard = async (req, res) => {
       },
       { transaction }
     );
-
     await transaction.commit();
     res.status(201).json(newUpload);
   } catch (error) {
@@ -93,6 +88,8 @@ const preview = async (req, res) => {
     console.log("Preview fetch error " + error);
   }
 };
+
+
 
 module.exports = {
   createCard,

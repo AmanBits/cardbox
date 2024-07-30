@@ -26,7 +26,7 @@ const Preview = () => {
             },
           }
         );
-        console.log(response.data.data[0].image);
+        // console.log(response.data.data[0]);
         setObj(response.data.data[0]);
       } catch (error) {
         console.error("Object fetch error " + error);
@@ -41,15 +41,43 @@ const Preview = () => {
   }, [link]);
 
   return (
-    <div>
-      {loading ? `Loading... ${progress}%` : (
-        <div>
-          <img 
-  id="uploadedImage" 
-  src={`http://localhost:3000/uploads/${obj.image}`} 
-  alt="Uploaded Image" 
-/>
-
+    <div className="container">
+      {loading ? (
+        `Loading... ${progress}%`
+      ) : (
+        <div className="col mx-auto w-50 ">
+          <div className="row mx-1">
+            <div className="col-10">
+              <div className="row">
+                <h5 className="m-0">{obj.name}</h5>
+              </div>
+              <div className="row">
+                <h6 className="m-0">{obj.title}</h6>
+              </div>
+              <div className="row">
+                <p className="m-0">{obj.paragraph}</p>
+              </div>
+            </div>
+            <div className="col-2">...</div>
+          </div>
+          <div className="row ">
+            <img
+              id="uploadedImage"
+              src={`http://localhost:3000/uploads/${obj.image}`}
+              alt="Uploaded Image"
+            />
+          </div>
+          <div className="row">
+            <audio controls>
+              <source
+                src={
+                  obj.song ? `http://localhost:3000/uploads/${obj.song}` : ""
+                }
+                type="audio/mpeg"
+              />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
         </div>
       )}
     </div>
