@@ -1,18 +1,20 @@
 
 .formBox {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    border: 1px solid #ccc;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    display: none;
-    border-radius: 8px;
-  }
-  
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border: 1px solid #ccc;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: block; /* Make sure it is visible */
+  border-radius: 8px;
+  max-height: 400px; /* Set a max-height to ensure scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
   .formBox.open {
     display: block;
   }

@@ -1,20 +1,29 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import MyCard from "./MyCard";
 
 const Preview = () => {
   const { link } = useParams();
   const [obj, setObj] = useState({});
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [expired, setExpired] = useState(false);
+  const [notFound, setNotFound] = useState(false);
+
+  // Ensure expirydate is in ISO format
+  const expirydate = new Date().toISOString();
 
   useEffect(() => {
     const fetchObj = async () => {
+      setLoading(true);
+      setExpired(false);
+      setNotFound(false);
+
       try {
-        setLoading(true);
         const response = await axios.post(
-          "http://localhost:3000/api/card/preview",
-          { linkdata: link },
+          `http://localhost:3000/api/card/preview`,
+          { linkdata: link, expirydate: expirydate },
           {
             onDownloadProgress: (progressEvent) => {
               if (progressEvent.lengthComputable) {
@@ -26,10 +35,17 @@ const Preview = () => {
             },
           }
         );
-        // console.log(response.data.data[0]);
-        setObj(response.data.data[0]);
+
+        // Check the custom status code from the response
+        if (response.data.mystatus === 222) {
+          setNotFound(true);
+        } else if (response.data.mystatus === 223) {
+          setExpired(true);
+        } else {
+          setObj(response.data.data[0]);
+        }
       } catch (error) {
-        console.error("Object fetch error " + error);
+        console.error("Object fetch error:", error);
       } finally {
         setLoading(false);
       }
@@ -43,41 +59,14 @@ const Preview = () => {
   return (
     <div className="container">
       {loading ? (
-        `Loading... ${progress}%`
+        <div>Loading... {progress}%</div>
+      ) : expired ? (
+        <h4 className="text-center">Link Expired</h4>
+      ) : notFound ? (
+        <h4 className="text-center">Card Not Found</h4>
       ) : (
-        <div className="col mx-auto w-50 ">
-          <div className="row mx-1">
-            <div className="col-10">
-              <div className="row">
-                <h5 className="m-0">{obj.name}</h5>
-              </div>
-              <div className="row">
-                <h6 className="m-0">{obj.title}</h6>
-              </div>
-              <div className="row">
-                <p className="m-0">{obj.paragraph}</p>
-              </div>
-            </div>
-            <div className="col-2">...</div>
-          </div>
-          <div className="row ">
-            <img
-              id="uploadedImage"
-              src={`http://localhost:3000/uploads/${obj.image}`}
-              alt="Uploaded Image"
-            />
-          </div>
-          <div className="row">
-            <audio controls>
-              <source
-                src={
-                  obj.song ? `http://localhost:3000/uploads/${obj.song}` : ""
-                }
-                type="audio/mpeg"
-              />
-              Your browser does not support the audio element.
-            </audio>
-          </div>
+        <div className="col d-flex justify-content-center align-items-center mt-5">
+          <MyCard obj={obj} />
         </div>
       )}
     </div>

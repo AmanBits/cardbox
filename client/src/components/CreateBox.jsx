@@ -9,7 +9,13 @@ const CreateBox = ({ isOpen, onClose }) => {
     paragraph: "",
     image: null,
     song: null,
+    viewers: "single", // Default value
+    viewslimit: "",
+    expiry: "",
+    locked: "0", // Default value
+    downloadable: "0" // Default value
   });
+
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -23,19 +29,22 @@ const CreateBox = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Create a FormData instance
     const data = new FormData();
     data.append("name", formData.name);
     data.append("title", formData.title);
     data.append("paragraph", formData.paragraph);
     if (formData.image) data.append("image", formData.image);
     if (formData.song) data.append("song", formData.song);
+    data.append("viewers", formData.viewers);
+    data.append("viewslimit", formData.viewslimit);
+    data.append("expiry", formData.expiry);
+    data.append("locked", formData.locked);
+    data.append("downloadable", formData.downloadable);
 
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/card/create",
+        `http://localhost:3000/api/card/create`,
         data,
         {
           headers: {
@@ -52,16 +61,19 @@ const CreateBox = ({ isOpen, onClose }) => {
         }
       );
 
-      // Handle success
       if (response.status === 201) {
         console.log("Uploaded successfully");
-        // Reset form
         setFormData({
           name: "",
           title: "",
           paragraph: "",
           image: null,
           song: null,
+          viewers: "single",
+          viewslimit: "",
+          expiry: "",
+          locked: "0",
+          downloadable: "0"
         });
         onClose(); // Close modal or reset state
       } else {
@@ -121,11 +133,9 @@ const CreateBox = ({ isOpen, onClose }) => {
             id="image"
             name="image"
             onChange={handleChange}
-            placeholder="Image"
             accept="image/png, image/gif, image/jpeg"
           />
         </div>
-
         <div className={style.formGroup}>
           <input
             style={{ padding: "8px" }}
@@ -133,10 +143,75 @@ const CreateBox = ({ isOpen, onClose }) => {
             id="song"
             name="song"
             onChange={handleChange}
-            placeholder="Song"
             accept="audio/mp3"
           />
         </div>
+
+        <label htmlFor="viewers">Viewers</label>
+        <div className={style.formGroup}>
+          <select
+            name="viewers"
+            id="viewers"
+            value={formData.viewers}
+            onChange={handleChange}
+          >
+            <option value="single">Single</option>
+            <option value="multiple">Multiple</option>
+          </select>
+        </div>
+
+        <label htmlFor="viewslimit">Views Limit</label>
+        <div className={style.formGroup}>
+          <input
+            style={{ padding: "8px" }}
+            type="number"
+            id="viewslimit"
+            name="viewslimit"
+            value={formData.viewslimit}
+            onChange={handleChange}
+            placeholder="Views Limit"
+          />
+        </div>
+
+        <label htmlFor="expiry">Expiry</label>
+        <div className={style.formGroup}>
+          <input
+            style={{ padding: "8px" }}
+            type="datetime-local"
+            id="expiry"
+            name="expiry"
+            value={formData.expiry}
+            onChange={handleChange}
+            placeholder="Expiry"
+          />
+        </div>
+
+        <label htmlFor="locked">Locked</label>
+        <div className={style.formGroup}>
+          <select
+            name="locked"
+            id="locked"
+            value={formData.locked}
+            onChange={handleChange}
+          >
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+
+        <label htmlFor="downloadable">Downloadable</label>
+        <div className={style.formGroup}>
+          <select
+            name="downloadable"
+            id="downloadable"
+            value={formData.downloadable}
+            onChange={handleChange}
+          >
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+
         <button className="btn btn-outline-success" type="submit">
           Submit
         </button>

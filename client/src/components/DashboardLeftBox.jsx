@@ -15,7 +15,7 @@ const DashboardLeftBox = () => {
       <button className="btn btn-outline-info mt-3" onClick={createCard}>
         New Card
       </button>
-      <CreateBox isOpen={isOpen} onClose={closeBox} />
+      <CreateBox isOpen={isOpen}  onClose={closeBox} />
     </div>
   );
 };

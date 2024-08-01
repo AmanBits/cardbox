@@ -47,6 +47,8 @@ const decodeIds = (encodedIds) => {
 
 const createCard = async (req, res) => {
   const transaction = await db.sequelize.transaction();
+
+  console.log(req.body);
   try {
     // Save file paths and text data
     const newUpload = await Card.create(
@@ -56,6 +58,11 @@ const createCard = async (req, res) => {
         paragraph: req.body.paragraph,
         image: path.basename(req.files["image"][0].path),
         song: path.basename(req.files["song"][0].path),
+        viewers: req.body.viewers,
+        viewslimit: req.body.viewslimit,
+        expiry: req.body.expiry,
+        locked: req.body.locked,
+        downloadable: req.body.downloadable,
       },
       { transaction }
     );
@@ -81,14 +88,28 @@ const history = async (req, res) => {
 const preview = async (req, res) => {
   try {
     const link = req.body.linkdata;
+
+    // Decode IDs and fetch the card
     const { cardid, user_id } = await decodeIds(link);
     const result = await Card.findAll({ where: { id: cardid } });
-    res.status(200).json({ data: result });
+
+    // Check if the result is empty
+    if (result.length === 0) {
+      return res.status(200).json({ mystatus:222, data: "Card not found" });
+    }
+
+    // Check expiration date
+    if (new Date(req.body.expirydate) > new Date(result[0].expiry)) {
+      return res.status(200).json({mystatus:223, data: "Link expired" });
+    } else {
+      return res.status(200).json({mystatus:224, data: result });
+    }
   } catch (error) {
-    console.log("Preview fetch error " + error);
+    // Log detailed error information
+    console.error("Preview fetch error:", error.message);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 
 module.exports = {
