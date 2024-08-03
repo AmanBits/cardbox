@@ -11,23 +11,26 @@ import locked from "../assets/images/mycard/locked.png";
 import downloadable from "../assets/images/mycard/downloadable.jpg";
 
 function MyCard({ obj }) {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const baseApiUrl = import.meta.env.VITE_API_BASE_URL;
+  
   return (
     <Card style={{ width: "18rem", border: "1px solid #ddd" }}>
       <Card.Img
         variant="top"
-        src={`http://localhost:3000/uploads/${obj.image}`}
+        src={`${baseApiUrl}/uploads/${obj.image}`}
         style={{ objectFit: "cover", height: "180px" }}
       />
       <audio controls style={{ width: "100%" }}>
         <source
-          src={`http://localhost:3000/api/card/audio/${obj.song}`}
+          src={`${apiUrl}/card/audio/${obj.song}`}
           type="audio/mpeg"
         />
       </audio>
 
       <Card.Body>
-        <div >
-        <Card.Title>Title : {obj.title}</Card.Title>
+        <div>
+          <Card.Subtitle>From : Mohammad Aman</Card.Subtitle>
         </div>
         <p className="mb-2 p-0">
           Created At :
@@ -50,25 +53,31 @@ function MyCard({ obj }) {
               />
               Multiple
             </Badge>
-            <Badge bg="dark">
-              <img
-                src={limit}
-                width="13px"
-                heigth="27px"
-                className="mx-1 rounded"
-              />
-              Limit
-            </Badge>
-            <Badge bg="warning">
-              <img
-                src={expired}
-                width="13px"
-                heigth="27px"
-                className="mx-1 rounded"
-              />
-              Expiry
-            </Badge>
-            <Badge bg="danger" text="dark">
+            {obj.viewslimit != 0 ? (
+              <Badge bg="dark" title={obj.viewslimit}>
+                <img
+                  src={limit}
+                  width="13px"
+                  heigth="27px"
+                  className="mx-1 rounded"
+                />
+                Limit
+              </Badge>
+            ) : null}
+
+            {obj.expiry != "0000-00-00 00:00:00" ? (
+              <Badge bg="warning" title={obj.expiry}>
+                <img
+                  src={expired}
+                  width="13px"
+                  heigth="27px"
+                  className="mx-1 rounded"
+                />
+                Expiry
+              </Badge>
+            ) : null}
+
+            {/* <Badge bg="danger" text="dark">
               <img
                 src={locked}
                 width="11px"
@@ -85,11 +94,12 @@ function MyCard({ obj }) {
                 className="mx-1 rounded"
               />
               Downloadable
-            </Badge>
+            </Badge> */}
           </Stack>
         </div>
 
-        <hr/>
+        <hr />
+        <Card.Title>Title : {obj.title}</Card.Title>
         <Card.Text>{obj.paragraph}</Card.Text>
         {/* <Button variant="primary">Share</Button> */}
       </Card.Body>

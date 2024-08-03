@@ -4,6 +4,7 @@ import axios from "axios";
 import CardLink from "./CardLink";
 
 const DashboardRightBox = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -13,7 +14,7 @@ const DashboardRightBox = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:3000/api/card/history`,
+          `${apiUrl}/card/history`,
           {
             onDownloadProgress: (progressEvent) => {
               if (progressEvent.lengthComputable) {

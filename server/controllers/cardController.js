@@ -88,7 +88,6 @@ const history = async (req, res) => {
 const preview = async (req, res) => {
   try {
     const link = req.body.linkdata;
-
     // Decode IDs and fetch the card
     const { cardid, user_id } = await decodeIds(link);
     const result = await Card.findAll({ where: { id: cardid } });
@@ -98,10 +97,15 @@ const preview = async (req, res) => {
       return res.status(200).json({ mystatus:222, data: "Card not found" });
     }
 
+    if(result[0].limitcounts>result[0].viewslimit){
+      return res.status(200).json({mystatus:221, data: "Limit Exceed" });
+    }
+    
     // Check expiration date
     if (new Date(req.body.expirydate) > new Date(result[0].expiry)) {
       return res.status(200).json({mystatus:223, data: "Link expired" });
     } else {
+      await Card.increment('limitcounts', { by: 1, where: { id: cardid } });
       return res.status(200).json({mystatus:224, data: result });
     }
   } catch (error) {

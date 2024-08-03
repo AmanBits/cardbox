@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import style from "../assets/css/createbox.module.css";
 import axios from "axios";
 
+
+
+
 const CreateBox = ({ isOpen, onClose }) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+ 
+  
+
   const [formData, setFormData] = useState({
     name: "",
     title: "",
@@ -44,7 +51,7 @@ const CreateBox = ({ isOpen, onClose }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/card/create`,
+        `${apiUrl}/card/create`,
         data,
         {
           headers: {
